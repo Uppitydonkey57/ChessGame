@@ -23,7 +23,7 @@ import java.io.*;
 public class Main {
 
 	public static void main(String args[]) throws UnknownHostException, IOException {
-		boolean useServer = false;
+		boolean useServer = true;
 		
 		Client client = null;
 		
@@ -31,13 +31,11 @@ public class Main {
 		
 		if (useServer) {
 			client = new Client(false);
-			//client.start();
-			
-			client.read();
+			client.start();
 			System.out.println("Enter your name");
 			Scanner scanner = new Scanner(System.in);
 			String name = scanner.nextLine();
-			client.write(name);
+			client.write("USER:" + name);
 			String teamMessage = client.read();
 			if (teamMessage.compareTo("white") == 0) {
 				System.out.println(teamMessage + "?");
@@ -54,8 +52,11 @@ public class Main {
 
 		Input input = new Input(window);
 		
+		CommandParser parser = new CommandParser(client);
+		
 		EntityManager entityManager = new EntityManager(rend, input);
 		entityManager.client = client;
+		entityManager.parser = parser;
 
 		
 		Camera camera = new Camera();
@@ -70,8 +71,10 @@ public class Main {
 			entityManager.render();
 			input.update();
 			window.update();
+			parser.Parse();
 
 		}
+		String foo = "";
 
 		client.write("/quit");
 		window.close();

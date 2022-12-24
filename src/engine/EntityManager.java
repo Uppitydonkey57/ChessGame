@@ -1,7 +1,7 @@
 package engine;
 
 import java.util.ArrayList;
-import multiplayer.Client;
+import multiplayer.*;
 
 public class EntityManager {
 	public ArrayList<Entity> entities = new ArrayList<Entity>();
@@ -9,6 +9,7 @@ public class EntityManager {
 	public Renderer rend;
 	Input input;
 	public Client client;
+	public CommandParser parser;
 
 	public EntityManager(Renderer rend, Input input) {
 		this.rend = rend;

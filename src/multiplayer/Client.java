@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class Client {
+public class Client extends Thread {
 	private Socket s;
 	private boolean isDebug;
 
@@ -47,9 +47,27 @@ public class Client {
 		commands.remove(commands.size() - 1);
 		return buffer;
 	}
+	
+	public ArrayList<String> popFullStack() {
+		ArrayList<String> currentCommands = commands;
+		commands.clear();
+		return currentCommands;
+	}
 
 	public void write(String message) {
 		writer.println(message);
 		writer.flush();
+	}
+
+
+
+	@Override
+	public void run() {
+		while (true) {
+			String message = read();
+			if (message != null) {
+				commands.add(message);
+			}
+		}
 	}
 }
