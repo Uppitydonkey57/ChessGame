@@ -97,7 +97,7 @@ public class Piece extends Entity {
 			justFinished = true;
 		}
 		
-		if (isMouseOver()) {
+		if (isMouseOver() && isWhite == boardManager.isWhite && boardManager.turnActive && !boardManager.waiting) {
 			if (input.mouseButtonDown(0)) {
 				boardManager.pieceSelected(this);
 			}

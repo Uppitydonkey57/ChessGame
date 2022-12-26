@@ -10,6 +10,7 @@ public class BoardGenerator {
 	
 	void generateBoard(EntityManager entityManager, boolean isWhite) {
 		BoardManager manager = new BoardManager();
+		manager.isWhite = isWhite;
 		entityManager.addEntity(manager);
 		
 		boolean isBlack = true;

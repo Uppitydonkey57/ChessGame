@@ -23,7 +23,7 @@ import java.io.*;
 public class Main {
 
 	public static void main(String args[]) throws UnknownHostException, IOException {
-		boolean useServer = true;
+		boolean useServer = false;
 		
 		Client client = null;
 		
@@ -31,20 +31,22 @@ public class Main {
 		
 		if (useServer) {
 			client = new Client(false);
-			client.start();
 			System.out.println("Enter your name");
 			Scanner scanner = new Scanner(System.in);
 			String name = scanner.nextLine();
 			client.write("USER:" + name);
+			client.read();
 			String teamMessage = client.read();
-			if (teamMessage.compareTo("white") == 0) {
+			if (teamMessage.compareTo("TEAM:WHITE") == 0) {
 				System.out.println(teamMessage + "?");
 				isWhite = true;
-			} else if (teamMessage.compareTo("black") == 0) {
+			} else if (teamMessage.compareTo("TEAM:BLACK") == 0) {
 				isWhite = false;
 			}
 			boolean processingAction;
+			client.start();
 		}
+		
 		//starting res: 1280 980
 		Window window = new Window(1860, 1860, "CHESS BY NATE AND ZACH!");
 
@@ -64,6 +66,9 @@ public class Main {
 		rend.SetCamera(camera);
 		
 		new BoardGenerator().generateBoard(entityManager, isWhite);
+		
+		Chat chat = new Chat(client);
+		chat.start();
 
 		while (!window.shouldClose()) {
 			rend.clearScreen(new Vector4f(0.07f, 0.01f, 0.0f, 0.0f));
@@ -74,9 +79,13 @@ public class Main {
 			parser.Parse();
 
 		}
-		String foo = "";
-
-		client.write("/quit");
+		
+		System.out.println("closing");
+		chat.close();
+		if (client != null) {
+			client.write("BYE");
+			client.end();
+		}
 		window.close();
 		
 	}

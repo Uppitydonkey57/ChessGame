@@ -14,8 +14,10 @@ public class Client extends Thread {
 
 	private BufferedReader reader;
 	private PrintWriter writer;
+	
+	private boolean shouldStop = false;
 
-	ArrayList<String> commands;
+	ArrayList<String> commands = new ArrayList<String>();
 
 	public Client(boolean isDebug) throws UnknownHostException, IOException {
 		this.isDebug = isDebug;
@@ -34,7 +36,6 @@ public class Client extends Thread {
 		String str = "";
 		try {
 			str = reader.readLine();
-			System.out.println(str);
 		} catch (IOException e) {
 			System.out.println(e);
 			return e.getMessage();
@@ -48,9 +49,8 @@ public class Client extends Thread {
 		return buffer;
 	}
 	
-	public ArrayList<String> popFullStack() {
+	public ArrayList<String> getFullStack() {
 		ArrayList<String> currentCommands = commands;
-		commands.clear();
 		return currentCommands;
 	}
 
@@ -63,11 +63,21 @@ public class Client extends Thread {
 
 	@Override
 	public void run() {
-		while (true) {
-			String message = read();
-			if (message != null) {
-				commands.add(message);
+		while (!shouldStop) {
+			String str = "";
+			try {
+				str = reader.readLine();
+				if (str != null) {
+					commands.add(str);
+				}
+			} catch (IOException e) {
+				System.out.println(e);
+				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void end() {
+		shouldStop = true;
 	}
 }
